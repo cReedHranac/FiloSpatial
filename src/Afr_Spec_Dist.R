@@ -1,7 +1,7 @@
 ## Script for importing species distributions for selected species
 library(ProjectTemplate)
-setwd(file.path("~/Desktop/Filovirus"))
-load.project('Filospatial')
+setwd(file.path("~/Desktop/FiloSpatial"))
+load.project('FiloSpatial')
 
 library(rgdal)
 library(stringr)
