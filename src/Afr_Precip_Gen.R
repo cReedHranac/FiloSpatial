@@ -1,10 +1,8 @@
 ## Script for monthly rainfall data
-setwd(file.path("~/Desktop/Filovirus/"))
+setwd(file.path("~/Desktop/FiloSpatial/"))
 library(ProjectTemplate)
-load.project("Filovirus")
+load.project("FiloSpatial.Rproj")
 
-library(raster)
-library(rgdal)
 
 #Reading African shapefile
 afr.poly <- readOGR(dsn = "data/Africa", layer = "AfricanCountires")
@@ -25,7 +23,7 @@ precip.af.m <- lapply(precip.af,
                       mask, afr.poly)
 
 #Changing to cleaned directory
-setwd(file.path("~/Desktop/Filovirus/data/AfrPrecip/"))
+setwd(file.path("~/Desktop/FiloSpatial/data/AfrPrecip/"))
 
 for(i in 1:12){
   writeRaster(x = precip.af.m[[i]],
