@@ -1,7 +1,7 @@
 ## Script for reading in case data
-setwd(file.path("~/Desktop/Filovirus/"))
+setwd(file.path("~/Desktop/FiloSpatial/"))
 library(ProjectTemplate)
-load.project("Filovirus")
+load.project("FiloSpatial")
 
 library(rgdal)
 
