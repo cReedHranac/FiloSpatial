@@ -1,13 +1,11 @@
 ################################
-## Merging all dataframes into 1
+## Merging all dataframes into 1 producting the "full" dataframe
 ################################
-
-library(ProjectTemplate)
-load.project('FiloSpatial.Rproj')
+source("src/packagesFiloSpatial.R")
 
 ## Load Dataframes
   an.index <- read.csv(file = "data/Dataframes/Animal_Index_16Feb.csv", header = T)
-  hu.index <- read.csv(file = "data/Dataframes/Human_Index_16Feb.csv", header = T)
+  hu.index <- read.csv(file = "data/Dataframes/Human_Index_30May.csv", header = T)
   breeding <- read.csv(file = "data/Dataframes/BreedingDB.csv", header = T)
   
 ## Obtaining centroids for index cases
@@ -20,7 +18,7 @@ load.project('FiloSpatial.Rproj')
     an.p <- cbind(animal.pt@coords, animal.pt@data$UNIQUE_ID)
     colnames(an.p) <-c("x","y","")
     an.pts<- rbind(an.p,an.c)
-    colnames(an.pts) <-c("latF","longF","OUTBREAK_ID")   
+    colnames(an.pts) <-c("lon","lat","OUTBREAK_ID")   
     an.pts<-as.data.frame(an.pts)
     animal.frame <- merge(an.pts, an.index, by= "OUTBREAK_ID")
   ##Human index case points
@@ -28,24 +26,26 @@ load.project('FiloSpatial.Rproj')
     hu.c <- cbind(hu.cnter@coords, hu.cnter@data$OUTBREAK)
     hu.p <- cbind(human.pt@coords, human.pt@data$OUTBREAK)
     hu.pts <- rbind(hu.c, hu.p)
-    colnames(hu.pts) <-c("latF","longF","Outbreak_ID")
+    colnames(hu.pts) <-c("lon","lat","Outbreak_ID")
     hu.pts <- as.data.frame(hu.pts)  
     human.frame <- merge(hu.pts, hu.index, by= "Outbreak_ID")
 
 ## Servicing dataframes for merger
     #Animal
-    animal.sub <- cbind(animal.frame[,c("OUTBREAK_ID", "latF", "longF", "Virus", "Country", "Place", "Apparnet.Origin", "Month.Start","Species", "Reference","Class")])
+    animal.sub <- cbind(animal.frame[,c("OUTBREAK_ID", "lat", "lon", "Virus", "Country", "Place", "Apparnet.Origin", "Month.Start","Species", "Reference","Class")])
     for(i in 1:nrow(animal.sub)){
       animal.sub$OUTBREAK_ID[i] <- paste(i,"A",sep = "")
     } ## Adding an "A" to the outbreak id 
     colnames <- c("ID","lat","lon","Virus","Country","Place","Origin.Species","M.Start","Species","Ref","Class")
     colnames(animal.sub) <-colnames
+    
     #Human
-    human.sub <- cbind(human.frame[,c("Outbreak_ID", "latF","longF","Virus","Country", "Apparnet.Origin", "Outbreak.Notes", "Month.Start", "Article.Ref","Class")])
+    human.sub <- cbind(human.frame[,c("Outbreak_ID", "lat","lon","Virus","Country", "Apparnet.Origin", "Outbreak.Notes", "Month.Start", "Article.Ref","Class")])
     for(i in 1:nrow(human.sub)){
       human.sub$Outbreak_ID[i] <- paste(i,"H",sep="")
     }
     colnames(human.sub) <- c("ID", "lat", "lon", "Virus","Country","Place", "Outbreak.Notes", "M.Start", "Ref","Class")
+    
     #Breeding
     breeding$Start <-round(breeding$Start)
     breeding.sub <-cbind(breeding[,c("Spec_Binom","Lat","Lon","Place_Notes","Start","Reference","Class")])
@@ -57,6 +57,13 @@ load.project('FiloSpatial.Rproj')
 
 ## Merging all together
     full <- rbind.fill(breeding.sub, human.sub, animal.sub)
+    write.csv(x = full,
+              row.names = F,
+              "data/Dataframes/cache/Full.csv")
     
-    cache('full')
+## Cleaning up 
+    rm("afr.poly", "an.c", "an.cntr", "an.index", "an.p", "an.pts", "animal.frame", "animal.poly", "animal.pt",
+       "animal.sub", "breeding", "breeding.sub", "colnames", "hu.c", "hu.cnter", "hu.index", "hu.p", "hu.pts",
+       "human.frame", "human.poly", "human.pt", "human.sub", "i")
+    
     
