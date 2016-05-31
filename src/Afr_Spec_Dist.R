@@ -1,7 +1,5 @@
 ## Script for subsetting species distributions for selected species
-library(ProjectTemplate)
-setwd(file.path("~/Desktop/FiloSpatial"))
-load.project('FiloSpatial')
+source("src/packagesFiloSpatial.R")
 
 ##Potential host species 
   Af.spec <- read.csv("data/Dataframes/AfSpecies.csv")
